@@ -2,7 +2,9 @@
 
 ## Features
 Order Syncronization functionality for Sendinblue - Magento2 integration.
+
 This module sync all your Magento2 orders (for newsletter subscribed users) to Sendinblue.
+
 These are the default built in transactional attributes:
 - ORDER_ID
 - ORDER_DATE

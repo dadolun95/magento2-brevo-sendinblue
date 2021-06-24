@@ -9,6 +9,8 @@ These are the default built in transactional attributes:
 - ORDER_PRICE
 - ORDER_PRICE_INVOICED
 - ORDER_STATUS
+
+
 These are the default built in calculated attributes:
 - MAGENTO_LAST_30_DAYS_AMOUNT
 - MAGENTO_LAST_30_DAYS_AMOUNT_INVOICED

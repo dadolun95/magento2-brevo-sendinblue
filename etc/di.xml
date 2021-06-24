@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category    Magento 2
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Dadolun\SibOrderSync\Model\Config\Backend\OrderSetting">
+        <arguments>
+            <argument name="contactTransactionalAttributes" xsi:type="array">
+                <item name="ORDER_ID" xsi:type="string">id</item>
+                <item name="ORDER_DATE" xsi:type="string">date</item>
+                <item name="ORDER_PRICE" xsi:type="string">float</item>
+                <item name="ORDER_PRICE_INVOICED" xsi:type="string">float</item>
+                <item name="ORDER_STATUS" xsi:type="string">text</item>
+            </argument>
+            <argument name="contactCalculatedAttributes" xsi:type="array">
+                <item name="MAGENTO_LAST_30_DAYS_AMOUNT" xsi:type="string">SUM[ORDER_PRICE,ORDER_DATE,>,NOW(-30)]</item>
+                <item name="MAGENTO_LAST_30_DAYS_AMOUNT_INVOICED" xsi:type="string">SUM[ORDER_PRICE_INVOICED,ORDER_DATE,>,NOW(-30)]</item>
+                <item name="MAGENTO_ORDER_TOTAL" xsi:type="string">COUNT[ORDER_ID]</item>
+                <item name="MAGENTO_ORDER_TOTAL_INVOICED" xsi:type="string">COUNT[ORDER_ID,ORDER_PRICE_INVOICED,>,0]</item>
+                <item name="MAGENTO_ORDER_AMOUNT" xsi:type="string">SUM[ORDER_PRICE]</item>
+                <item name="MAGENTO_ORDER_AMOUNT_INVOICED" xsi:type="string">SUM[ORDER_PRICE_INVOICED]</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

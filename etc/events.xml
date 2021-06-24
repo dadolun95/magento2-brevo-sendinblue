@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category    Magento 2
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_save_after">
+        <observer name="dadolun_sib_order_update" instance="Dadolun\SibOrderSync\Observer\OrderUpdate"/>
+    </event>
+</config>
+
+
+

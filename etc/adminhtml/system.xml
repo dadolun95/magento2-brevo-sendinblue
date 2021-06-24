@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category    Magento 2
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="dadolun_sib" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <resource>Dadolun_SibCore::sendinblue</resource>
+            <group id="sendinblue_order" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order Sync</label>
+                <field id="order_setting" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync orders on Sendinblue</label>
+                    <backend_model>Dadolun\SibOrderSync\Model\Config\Backend\OrderSetting</backend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="dadolun_sib/sendinblue/api_key_status">1</field>
+                    </depends>
+                </field>
+                <field id="sync_orders" translate="button_label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <button_label>Sync orders</button_label>
+                    <frontend_model>Dadolun\SibOrderSync\Block\Adminhtml\Config\SyncOrders</frontend_model>
+                    <depends>
+                        <field id="subscribe_setting">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,63 @@
+<?php
+/**
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @license     Open Source License
+ */
+
+/** @var \Dadolun\SibOrderSync\Block\Adminhtml\Config\SyncOrders $block */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+?>
+
+<?php
+$ajaxUrl = $block->escapeJs($block->getAjaxUrl());
+$errorMessage = $block->escapeJs($block->escapeHtml(__('Error during order sync.')));
+
+$scriptString = <<<script
+require(['jquery'], function($) {
+
+//<![CDATA[
+    function syncOrders() {
+        new Ajax.Request('{$ajaxUrl}', {
+            onSuccess: function(response) {
+                var syncMessage = $('#sync_order_result');
+                var result = '{$errorMessage}';
+                try {
+                    if (response.responseText.isJSON()) {
+                        response = response.responseText.evalJSON();
+                        result = response.message;
+                    }
+                    if (response.valid == 1) {
+                        syncMessage.removeClass('hidden').removeClass('admin__field-error').addClass('note');
+                        syncMessage.css({color:'green'});
+                    } else {
+                        syncMessage.removeClass('hidden').addClass('admin__field-error');
+                    }
+                } catch (e) {
+                    syncMessage.removeClass('hidden').removeClass('admin__field-error');
+                }
+                syncMessage.text(result);
+            }
+        });
+    }
+
+    window.syncOrders = syncOrders;
+//]]>
+
+});
+script;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
+
+<div class="actions actions-validate-vat">
+    <p class="admin__field-error hidden" id="sync_order_result"></p>
+    <button class="action-validate-vat" type="button" id="<?= /* @noEscape */ $block->getHtmlId() ?>">
+        <span><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
+    </button>
+</div>
+<?= /* @noEscape */ $secureRenderer->renderTag('style', [], '#sync_order_result {margin-bottom: 10px;}', false); ?>
+<?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
+    'onclick',
+    'syncOrders();event.preventDefault();',
+    '#' . /* @noEscape */ $block->getHtmlId()
+); ?>

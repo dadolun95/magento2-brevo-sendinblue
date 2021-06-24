@@ -25,9 +25,12 @@
                     <button_label>Sync orders</button_label>
                     <frontend_model>Dadolun\SibOrderSync\Block\Adminhtml\Config\SyncOrders</frontend_model>
                     <depends>
-                        <field id="subscribe_setting">1</field>
+                        <field id="order_setting">1</field>
                     </depends>
                 </field>
+                <depends>
+                    <field id="dadolun_sib/sendinblue/enabled">1</field>
+                </depends>
             </group>
         </section>
     </system>

@@ -41,14 +41,6 @@ php bin/magento module:enable Dadolun_SibOrderSync
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
 ```
-##### SOURCE CODE
-If you choose to add the module from source code instead of using composer you need to add module's files on your app/code folder.
-Then enable it and update the database:
-```
-php bin/magento module:enable Dadolun_SibOrderSync
-php bin/magento setup:upgrade
-php bin/magento setup:di:compile
-```
 ##### CONFIGURATION
 You must enable the order sync from "Stores > Configurations > Dadolun > Sendinblue > Order Sync" section.
 The module provides a "Sync order" CTA on adminhtml that move all existing order (made from newsletter subscribed contacts) to Sendinblue (only new orders are synced on runtime).

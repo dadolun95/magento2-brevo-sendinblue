@@ -1,4 +1,5 @@
-# Dadolun_SibOrderSync
+# Sendinblue Magento2 Module
+### Dadolun_SibOrderSync
 
 ## Features
 Order Syncronization functionality for Sendinblue - Magento2 integration.

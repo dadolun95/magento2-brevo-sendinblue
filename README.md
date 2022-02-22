@@ -37,7 +37,7 @@ Add a "repositories" node on your composer.json:
     "url": "https://dadolun_sib.repo.repman.io"
 }
 ```
-and executing this command:
+Execute this command:
 ```
 composer require dadolun95/magento2-sib-order-sync
 ```

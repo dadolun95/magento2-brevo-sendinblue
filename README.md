@@ -1,4 +1,4 @@
-# Sendinblue Magento2 Module
+# Sendinblue Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" />
 ### Dadolun_SibOrderSync
 
 ## Features

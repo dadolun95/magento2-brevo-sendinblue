@@ -19,7 +19,7 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
 {
 
     const CONFIG_GROUP_ORDER_PATH = 'sendinblue_order';
-    const MODULE_ORDER_CONFIG_PATH = self::CONFIG_SECTION_PATH . DS . self::CONFIG_GROUP_ORDER_PATH;
+    const MODULE_ORDER_CONFIG_PATH = self::CONFIG_SECTION_PATH . '/' . self::CONFIG_GROUP_ORDER_PATH;
 
     const ORDER_ID_ATTRIBUTE = 'ORDER_ID';
     const ORDER_DATE_ATTRIBUTE = 'ORDER_DATE';
@@ -36,7 +36,7 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
      * @return mixed
      */
     public function getOrderValue($val) {
-        return $this->scopeConfig->getValue(self::MODULE_ORDER_CONFIG_PATH . DS . $val, ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(self::MODULE_ORDER_CONFIG_PATH . '/' . $val, ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -44,7 +44,7 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
      * @return bool
      */
     public function getOrderFlag($val) {
-        return $this->scopeConfig->isSetFlag(self::MODULE_ORDER_CONFIG_PATH . DS . $val, ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::MODULE_ORDER_CONFIG_PATH . '/' . $val, ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -57,7 +57,7 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
      */
     public function setOrderValue($pathVal, $val, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
     {
-        $this->configWriter->save(self::MODULE_ORDER_CONFIG_PATH . DS . $pathVal, $val, $scope, $scopeId);
+        $this->configWriter->save(self::MODULE_ORDER_CONFIG_PATH . '/' . $pathVal, $val, $scope, $scopeId);
     }
 
     /**

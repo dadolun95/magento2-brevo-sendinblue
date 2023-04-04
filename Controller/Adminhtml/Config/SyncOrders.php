@@ -110,7 +110,6 @@ class SyncOrders extends \Magento\Backend\App\Action
             $result['valid'] = true;
             $result['message'] = __('Orders correctly synced');
         } catch (\Exception $e) {
-            var_dump($e->getMessage()); die();
             $result['valid'] = false;
             $result['message'] = __('Something went wrong syncing your orders, enable the debug logger and check api responses');
         }
@@ -143,49 +142,59 @@ class SyncOrders extends \Magento\Backend\App\Action
                 if ($subscriber->getCustomerId()) {
                     $this->debugLogger->info(__('Update user order data (admin sync)'));
 
-                    /**
-                     * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
-                     */
-                    $orders = $this->orderCollectionFactory->create()
-                        ->addFieldToFilter(
-                            ['customer_id', 'customer_email'],
-                            [
-                                ['eq' => $subscriber->getCustomerId()],
-                                ['eq' => $email]
-                            ]
-                        )
-                        ->getItems();
+                    try {
 
-                    foreach ($orders as $order) {
-                        $updateDataInSib = [
-                            ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
-                            ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
-                            ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                            ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
-                            ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
-                        ];
-                        $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                        /**
+                         * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
+                         */
+                        $orders = $this->orderCollectionFactory->create()
+                            ->addFieldToFilter(
+                                ['customer_id', 'customer_email'],
+                                [
+                                    ['eq' => $subscriber->getCustomerId()],
+                                    ['eq' => $email]
+                                ]
+                            )
+                            ->getItems();
+
+                        foreach ($orders as $order) {
+                            $updateDataInSib = [
+                                ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
+                                ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
+                                ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
+                                ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
+                                ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
+                            ];
+                            $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                        }
+                    } catch (\Exception $e) {
+                        $this->debugLogger->error($e->getMessage());
                     }
 
                 } else {
                     $this->debugLogger->info(__('Update user order data (admin sync)'));
 
-                    /**
-                     * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
-                     */
-                    $orders = $this->orderCollectionFactory->create()
-                        ->addFieldToFilter('customer_email', $email)
-                        ->getItems();
+                    try {
 
-                    foreach ($orders as $order) {
-                        $updateDataInSib = [
-                            ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
-                            ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
-                            ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                            ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
-                            ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
-                        ];
-                        $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                        /**
+                         * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
+                         */
+                        $orders = $this->orderCollectionFactory->create()
+                            ->addFieldToFilter('customer_email', $email)
+                            ->getItems();
+
+                        foreach ($orders as $order) {
+                            $updateDataInSib = [
+                                ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
+                                ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
+                                ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
+                                ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
+                                ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
+                            ];
+                            $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                        }
+                    } catch (\Exception $e) {
+                        $this->debugLogger->error($e->getMessage());
                     }
                 }
             }

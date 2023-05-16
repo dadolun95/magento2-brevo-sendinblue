@@ -1,10 +1,10 @@
-# Sendinblue Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" />
+# Brevo Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" />
 ### Dadolun_SibOrderSync
 
 ## Features
-Order Syncronization functionality for Sendinblue - Magento2 integration.
+Syncronization functionality for Brevo (Sendinblue previously) - Magento2 integration.
 
-This module sync all your Magento2 orders (for newsletter subscribed users) to Sendinblue.
+This module sync all your Magento2 orders (for newsletter subscribed users) to Brevo.
 
 These are the default built in transactional attributes:
 - ORDER_ID

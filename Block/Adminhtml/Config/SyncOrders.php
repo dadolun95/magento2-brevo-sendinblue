@@ -1,23 +1,26 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 
 namespace Dadolun\SibOrderSync\Block\Adminhtml\Config;
 
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+
 /**
  * Class SyncOrders
  * @package Dadolun\SibOrderSync\Block\Adminhtml\Config
  */
-class SyncOrders extends \Magento\Config\Block\System\Config\Form\Field
+class SyncOrders extends Field
 {
 
     /**
      * Set template to itself
      *
-     * @return $this|\Magento\Config\Block\System\Config\Form\Field
+     * @return $this|Field
      */
     protected function _prepareLayout()
     {
@@ -31,10 +34,10 @@ class SyncOrders extends \Magento\Config\Block\System\Config\Form\Field
     /**
      * Get the button and scripts contents
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      * @return string
      */
-    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element)
     {
         $originalData = $element->getOriginalData();
         $buttonLabel = !empty($originalData['button_label']) ? $originalData['button_label'] : __('Sync orders');

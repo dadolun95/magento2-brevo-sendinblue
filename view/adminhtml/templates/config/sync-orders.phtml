@@ -1,17 +1,19 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 
-/** @var \Dadolun\SibOrderSync\Block\Adminhtml\Config\SyncOrders $block */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
-?>
+/** @var SyncOrders $block */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+use \Dadolun\SibOrderSync\Block\Adminhtml\Config\SyncOrders;
+use Magento\Framework\View\Helper\SecureHtmlRenderer; ?>
 
 <?php
 $ajaxUrl = $block->escapeJs($block->getAjaxUrl());
-$errorMessage = $block->escapeJs($block->escapeHtml(__('Error during order sync.')));
+$errorMessage = $block->escapeJs($block->escapeHtml(__('Error during order sync. Please retry.')));
 
 $scriptString = <<<script
 require(['jquery'], function($) {

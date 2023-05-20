@@ -1,12 +1,14 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(
+    ComponentRegistrar::MODULE,
     'Dadolun_SibOrderSync',
-    __DIR__
+    isset($file) && realpath($file) == __FILE__ ? dirname($file) : __DIR__
 );

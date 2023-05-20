@@ -3,7 +3,7 @@
 /**
  * @category    Magento 2
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

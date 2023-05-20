@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 

@@ -2,10 +2,10 @@
     "name": "dadolun95/magento2-sib-order-sync",
     "description": "Magento2 Sendinblue Order Sync Integration Module",
     "type": "magento2-module",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "require": {
-        "dadolun95/magento2-sib-core": "^1.0.1",
-        "dadolun95/magento2-sib-contact-sync": "^1.0.1",
+        "dadolun95/magento2-sib-core": "^1.0.2",
+        "dadolun95/magento2-sib-contact-sync": "^1.0.2",
         "sendinblue/api-v3-sdk": "^8.4.0"
     },
     "license": [
@@ -16,7 +16,7 @@
         {
             "name": "Davide Lunardon",
             "email": "dadolun@gmail.com",
-            "homepage": "https://github.com/dadolun95",
+            "homepage": "https://www.dadolun.com",
             "role": "Developer"
         }
     ],

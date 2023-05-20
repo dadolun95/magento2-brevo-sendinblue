@@ -1,14 +1,14 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 
 namespace Dadolun\SibOrderSync\Observer;
 
-use Dadolun\SibOrderSync\Helper\Configuration as ConfigurationHelper;
-use Dadolun\SibContactSync\Model\SubscriptionManager;
+use \Dadolun\SibOrderSync\Helper\Configuration as ConfigurationHelper;
+use \Dadolun\SibContactSync\Model\SubscriptionManager;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use \Dadolun\SibCore\Helper\DebugLogger;
@@ -62,8 +62,6 @@ class OrderUpdate implements ObserverInterface
 
     /**
      * @param Observer $observer
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \SendinBlue\Client\ApiException
      */
     public function execute(Observer $observer)
     {

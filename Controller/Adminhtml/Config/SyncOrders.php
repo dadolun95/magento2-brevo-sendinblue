@@ -1,18 +1,21 @@
 <?php
 /**
  * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2021 Dadolun (https://github.com/dadolun95)
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
  * @license     Open Source License
  */
 
 namespace Dadolun\SibOrderSync\Controller\Adminhtml\Config;
 
-use Dadolun\SibContactSync\Model\SubscriptionManager;
-use Dadolun\SibCore\Helper\DebugLogger;
+use \Dadolun\SibContactSync\Model\SubscriptionManager;
+use \Dadolun\SibCore\Helper\DebugLogger;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use \Dadolun\SibOrderSync\Helper\Configuration as ConfigurationHelper;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory as SubscriberCollectionFactory;
 use Magento\Newsletter\Model\Subscriber;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
@@ -45,7 +48,7 @@ class SyncOrders extends \Magento\Backend\App\Action
     protected $subscriptionManager;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     protected $storeManager;
 
@@ -66,7 +69,7 @@ class SyncOrders extends \Magento\Backend\App\Action
 
     /**
      * SyncOrders constructor.
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
      * @param JsonFactory $resultJsonFactory
      * @param SubscriberCollectionFactory $subscriberCollectionFactory
      * @param ConfigurationHelper $configHelper
@@ -77,7 +80,7 @@ class SyncOrders extends \Magento\Backend\App\Action
      * @param DebugLogger $debugLogger
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        Context $context,
         JsonFactory $resultJsonFactory,
         SubscriberCollectionFactory $subscriberCollectionFactory,
         ConfigurationHelper $configHelper,
@@ -101,7 +104,7 @@ class SyncOrders extends \Magento\Backend\App\Action
     /**
      * Check whether vat is valid
      *
-     * @return \Magento\Framework\Controller\Result\Json
+     * @return Json
      */
     public function execute()
     {
@@ -114,7 +117,7 @@ class SyncOrders extends \Magento\Backend\App\Action
             $result['message'] = __('Something went wrong syncing your orders, enable the debug logger and check api responses');
         }
 
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        /** @var Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
         return $resultJson->setData([
             'valid' => (int)$result['valid'],
@@ -122,11 +125,6 @@ class SyncOrders extends \Magento\Backend\App\Action
         ]);
     }
 
-    /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \SendinBlue\Client\ApiException
-     */
     private function syncOrders() {
         $dateTime = $this->dateTimeFactory->create();
         /**
@@ -145,7 +143,7 @@ class SyncOrders extends \Magento\Backend\App\Action
                     try {
 
                         /**
-                         * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
+                         * @var OrderInterface[] $orders
                          */
                         $orders = $this->orderCollectionFactory->create()
                             ->addFieldToFilter(
@@ -177,7 +175,7 @@ class SyncOrders extends \Magento\Backend\App\Action
                     try {
 
                         /**
-                         * @var \Magento\Sales\Api\Data\OrderInterface[] $orders
+                         * @var OrderInterface[] $orders
                          */
                         $orders = $this->orderCollectionFactory->create()
                             ->addFieldToFilter('customer_email', $email)

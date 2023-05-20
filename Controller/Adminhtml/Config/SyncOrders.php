@@ -2,7 +2,7 @@
 /**
  * @package     Dadolun_SibOrderSync
  * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
- * @license     Open Source License
+ * @license    This code is licensed under MIT license (see LICENSE for details)
  */
 
 namespace Dadolun\SibOrderSync\Controller\Adminhtml\Config;

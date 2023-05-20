@@ -2,10 +2,10 @@
     "name": "dadolun95/magento2-sib-order-sync",
     "description": "Magento2 Sendinblue Order Sync Integration Module",
     "type": "magento2-module",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "require": {
-        "dadolun95/magento2-sib-core": "^1.0.2",
-        "dadolun95/magento2-sib-contact-sync": "^1.0.2",
+        "dadolun95/magento2-sib-core": "^1.0.3",
+        "dadolun95/magento2-sib-contact-sync": "^1.0.3",
         "sendinblue/api-v3-sdk": "^8.4.0"
     },
     "license": [

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
 /**
- * @category    Magento 2
  * @package     Dadolun_SibOrderSync
  * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
+ * @license    This code is licensed under MIT license (see LICENSE for details)
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -30,6 +30,7 @@
                 </field>
                 <depends>
                     <field id="dadolun_sib/sendinblue/enabled">1</field>
+                    <field id="dadolun_sib/sendinblue/api_key_status">1</field>
                 </depends>
             </group>
         </section>

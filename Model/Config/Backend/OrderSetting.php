@@ -99,7 +99,7 @@ class OrderSetting extends Value
     {
         $this->_dataSaveAllowed = false;
         $value = $this->getValue();
-        if (!$this->configHelper->isSyncEnabled() && $value === 1) {
+        if ($this->configHelper->isSyncEnabled() && $value === "1") {
             $apiKey = $this->configHelper->getValue('api_key_v3');
             if (!is_null($apiKey) && $apiKey !== '') {
 

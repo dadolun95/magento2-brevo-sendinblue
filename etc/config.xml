@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
+ * @license     This code is licensed under MIT license (see LICENSE for details)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <dadolun_sib>
+            <sendinblue_order>
+                <sync_type>async</sync_type>
+            </sendinblue_order>
+        </dadolun_sib>
+    </default>
+</config>

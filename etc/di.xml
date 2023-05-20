@@ -8,6 +8,7 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Dadolun\SibOrderSync\Api\Data\SyncOrderInfoInterface" type="Dadolun\SibOrderSync\Model\Sync\SyncOrderInfo" />
     <type name="Dadolun\SibOrderSync\Model\Config\Backend\OrderSetting">
         <arguments>
             <argument name="contactTransactionalAttributes" xsi:type="array">

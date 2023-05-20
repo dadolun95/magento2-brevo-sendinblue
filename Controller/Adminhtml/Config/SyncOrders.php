@@ -7,18 +7,13 @@
 
 namespace Dadolun\SibOrderSync\Controller\Adminhtml\Config;
 
-use \Dadolun\SibContactSync\Model\SubscriptionManager;
-use \Dadolun\SibCore\Helper\DebugLogger;
+use Dadolun\SibOrderSync\Model\Sync\SyncOrderInfoFactory;
+use Dadolun\SibOrderSync\Api\Data\SyncOrderInfoInterface;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
-use \Dadolun\SibOrderSync\Helper\Configuration as ConfigurationHelper;
-use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory as SubscriberCollectionFactory;
-use Magento\Newsletter\Model\Subscriber;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
-use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
+use Magento\Framework\MessageQueue\PublisherInterface;
 
 /**
  * Class SyncOrders
@@ -28,77 +23,45 @@ class SyncOrders extends \Magento\Backend\App\Action
 {
 
     /**
-     * @var JsonFactory
-     */
-    protected $resultJsonFactory;
-
-    /**
-     * @var SubscriberCollectionFactory
-     */
-    protected $subscriberCollectionFactory;
-
-    /**
-     * @var ConfigurationHelper
-     */
-    protected $configHelper;
-
-    /**
-     * @var SubscriptionManager
-     */
-    protected $subscriptionManager;
-
-    /**
      * @var StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var OrderCollectionFactory
+     * @var SyncOrderInfoFactory
      */
-    protected $orderCollectionFactory;
+    protected $syncOrderInfoFactory;
 
     /**
-     * @var DateTimeFactory
+     * @var JsonFactory
      */
-    protected $dateTimeFactory;
+    protected $resultJsonFactory;
 
     /**
-     * @var DebugLogger
+     * @var PublisherInterface
      */
-    protected $debugLogger;
+    protected $messagePublisher;
 
     /**
-     * SyncOrders constructor.
+     * SyncContacts constructor.
      * @param Context $context
-     * @param JsonFactory $resultJsonFactory
-     * @param SubscriberCollectionFactory $subscriberCollectionFactory
-     * @param ConfigurationHelper $configHelper
-     * @param SubscriptionManager $subscriptionManager
      * @param StoreManagerInterface $storeManager
-     * @param OrderCollectionFactory $orderCollectionFactory
-     * @param DateTimeFactory $dateTimeFactory
-     * @param DebugLogger $debugLogger
+     * @param SyncOrderInfoFactory $syncOrderInfoFactory
+     * @param PublisherInterface $messagePublisher
+     * @param JsonFactory $resultJsonFactory
      */
     public function __construct(
         Context $context,
-        JsonFactory $resultJsonFactory,
-        SubscriberCollectionFactory $subscriberCollectionFactory,
-        ConfigurationHelper $configHelper,
-        SubscriptionManager $subscriptionManager,
         StoreManagerInterface $storeManager,
-        OrderCollectionFactory $orderCollectionFactory,
-        DateTimeFactory $dateTimeFactory,
-        DebugLogger $debugLogger
+        SyncOrderInfoFactory $syncOrderInfoFactory,
+        PublisherInterface $messagePublisher,
+        JsonFactory $resultJsonFactory
     ) {
         parent::__construct($context);
-        $this->resultJsonFactory = $resultJsonFactory;
-        $this->subscriberCollectionFactory = $subscriberCollectionFactory;
-        $this->configHelper = $configHelper;
-        $this->subscriptionManager = $subscriptionManager;
         $this->storeManager = $storeManager;
-        $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->dateTimeFactory = $dateTimeFactory;
-        $this->debugLogger = $debugLogger;
+        $this->syncOrderInfoFactory = $syncOrderInfoFactory;
+        $this->messagePublisher = $messagePublisher;
+        $this->resultJsonFactory = $resultJsonFactory;
     }
 
     /**
@@ -109,12 +72,21 @@ class SyncOrders extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            $result = $this->syncOrders();
+
+            /** @var SyncOrderInfoInterface $dataObject */
+            $dataObject = $this->syncOrderInfoFactory->create(
+                $this->storeManager->getStore()->getId(),
+                SyncOrderInfoInterface::TOTAL_SYNC_TYPE,
+                '',
+                ''
+            );
+
+            $this->messagePublisher->publish('sibSync.order', $dataObject);
             $result['valid'] = true;
-            $result['message'] = __('Orders correctly synced');
+            $result['message'] = __('Subscribers orders sync is correctly added to queue. Please wait some time or check the logs (if enabled), data will\'be synchronized soon!');
         } catch (\Exception $e) {
             $result['valid'] = false;
-            $result['message'] = __('Something went wrong syncing your orders, enable the debug logger and check api responses');
+            $result['message'] = __('Something went wrong syncing your contacts, enable the debug logger and check api responses');
         }
 
         /** @var Json $resultJson */
@@ -123,79 +95,5 @@ class SyncOrders extends \Magento\Backend\App\Action
             'valid' => (int)$result['valid'],
             'message' => $result['message'],
         ]);
-    }
-
-    private function syncOrders() {
-        $dateTime = $this->dateTimeFactory->create();
-        /**
-         * @var Subscriber[] $subscribers
-         */
-        $subscribers = $this->subscriberCollectionFactory->create()
-            ->addFieldToFilter('subscriber_status', ['in' => ConfigurationHelper::ALLOWED_SUBSCRIBER_STATUSES])
-            ->getItems();
-        foreach ($subscribers as $subscriber) {
-            $subscriberStatus = $subscriber->getSubscriberStatus();
-            $email = $subscriber->getEmail();
-            if ($subscriberStatus) {
-                if ($subscriber->getCustomerId()) {
-                    $this->debugLogger->info(__('Update user order data (admin sync)'));
-
-                    try {
-
-                        /**
-                         * @var OrderInterface[] $orders
-                         */
-                        $orders = $this->orderCollectionFactory->create()
-                            ->addFieldToFilter(
-                                ['customer_id', 'customer_email'],
-                                [
-                                    ['eq' => $subscriber->getCustomerId()],
-                                    ['eq' => $email]
-                                ]
-                            )
-                            ->getItems();
-
-                        foreach ($orders as $order) {
-                            $updateDataInSib = [
-                                ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
-                                ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
-                                ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                                ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
-                                ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
-                            ];
-                            $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
-                        }
-                    } catch (\Exception $e) {
-                        $this->debugLogger->error($e->getMessage());
-                    }
-
-                } else {
-                    $this->debugLogger->info(__('Update user order data (admin sync)'));
-
-                    try {
-
-                        /**
-                         * @var OrderInterface[] $orders
-                         */
-                        $orders = $this->orderCollectionFactory->create()
-                            ->addFieldToFilter('customer_email', $email)
-                            ->getItems();
-
-                        foreach ($orders as $order) {
-                            $updateDataInSib = [
-                                ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
-                                ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $dateTime->gmtDate('Y-m-d', $order->getCreatedAt()),
-                                ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                                ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
-                                ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus()
-                            ];
-                            $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
-                        }
-                    } catch (\Exception $e) {
-                        $this->debugLogger->error($e->getMessage());
-                    }
-                }
-            }
-        }
     }
 }

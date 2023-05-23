@@ -61,7 +61,7 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
     }
 
     /**
-     * Checks whether the Sendinblue API key and the Sendinblue order form is enabled
+     * Checks whether the Brevo API key and the Brevo order form is enabled
      * and returns the true|false accordingly.
      *
      * @return bool

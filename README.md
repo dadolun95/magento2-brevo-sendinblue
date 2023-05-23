@@ -1,4 +1,4 @@
-# Brevo Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" />
+# Brevo Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" /> 
 ### Dadolun_SibOrderSync
 
 ## Features
@@ -71,7 +71,7 @@ php bin/magento setup:di:compile
 ```
 
 ##### CONFIGURATION
-You must enable the order sync from "Stores > Configurations > Dadolun > Sendinblue > Order Sync" section.
+You must enable the order sync from "Stores > Configurations > Dadolun > Brevo > Order Sync" section.
 The module provides a "Sync order" CTA on adminhtml that move all existing order (made from newsletter subscribed contacts) to Sendinblue (only new orders are synced on runtime).
 
 ## Contributing

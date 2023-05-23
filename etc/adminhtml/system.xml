@@ -14,7 +14,7 @@
             <group id="sendinblue_order" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Order Sync</label>
                 <field id="order_setting" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sync orders on Sendinblue</label>
+                    <label>Sync orders on Brevo</label>
                     <backend_model>Dadolun\SibOrderSync\Model\Config\Backend\OrderSetting</backend_model>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>

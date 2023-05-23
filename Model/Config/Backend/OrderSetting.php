@@ -114,7 +114,7 @@ class OrderSetting extends Value
                     $sibClient->getAccount();
                     $lastSibCLientResponse = $sibClient->getLastResponseCode();
                 } catch (ApiException $e) {
-                    $this->messageManager->addErrorMessage(__('An error occurred retrieving your Sendinblue account. Please check your API key.'));
+                    $this->messageManager->addErrorMessage(__('An error occurred retrieving your Brevo account. Please check your API key.'));
                     $this->_dataSaveAllowed = false;
                     return;
                 }

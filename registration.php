@@ -10,5 +10,5 @@ use Magento\Framework\Component\ComponentRegistrar;
 ComponentRegistrar::register(
     ComponentRegistrar::MODULE,
     'Dadolun_SibOrderSync',
-    isset($file) && realpath($file) == __FILE__ ? dirname($file) : __DIR__
+    __DIR__
 );

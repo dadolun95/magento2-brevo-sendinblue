@@ -1,5 +1,8 @@
 # Brevo Magento2 Module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" /> 
+
 ### Dadolun_SibOrderSync
+
+[![Latest Stable Version](https://poser.pugx.org/dadolun95/magento2-sib-order-sync/v/stable)](https://packagist.org/packages/dadolun95/magento2-sib-order-sync)
 
 ## Features
 Syncronization functionality for Brevo (Sendinblue previously) - Magento2 integration.
@@ -21,6 +24,9 @@ These are the default built in calculated attributes:
 - MAGENTO_ORDER_TOTAL_INVOICED
 - MAGENTO_ORDER_AMOUNT
 - MAGENTO_ORDER_AMOUNT_INVOICED
+
+## Compatibility
+Magento CE(EE) 2.4.4, 2.4.5, 2.4.6
 
 ## Installation
 You can install this module adding it on app/code folder or with composer.

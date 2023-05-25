@@ -45,7 +45,26 @@ php bin/magento setup:di:compile
 
 ##### CONFIGURATION
 You must enable the order sync from "Stores > Configurations > Dadolun > Brevo > Order Sync" section.
-The module provides a "Sync order" CTA on adminhtml that move all existing order (made from newsletter subscribed contacts) to Sendinblue (only new orders are synced on runtime).
+The module provides a "Sync order" CTA on adminhtml that move all existing order (made from newsletter subscribed contacts) to Brevo (only new orders are synced on runtime).
+Pay attention to the "Sync Type" configuration, you must choose between "Async" and "Sync" mode.
+- "Sync" mode (not recommended) will create or update order data on Brevo synchronously at each magento2 event (subscription update / order update) making an API call to Brevo
+- "Async" mode (recommended) use Magento2 message queue system with a dedicated MySQL-operated queue ([See here message queue configuration guide](https://experienceleague.adobe.com/docs/commerce-operations/configuration-guide/message-queues/manage-message-queues.html?lang=en)) so you need to configure also magento to use consumer properly updating your app/etc/env.php file (something like that):
+```
+...
+    'cron_consumers_runner' => [
+        'cron_run' => true,
+        'max_messages' => 1000,
+        'consumers' => [
+            'sibContactProcessor',
+            'sibOrderProcessor',
+        ]
+    ],
+...
+```
+The "Sync order" CTA use Magento2 message queue system. Clicking "Sync Order" you'll only add a complete order synchronization request on queue. So, if you set up "Sync" as "Sync Type" and you've not configured message queue system on your Magento installation, you will need to run this command from your cli each time you want to perform an "Order Sync" request from adminhtml:
+```
+php bin/magento queue:consumers:start sibOrderProcessor
+```
 
 ## Contributing
 Contributions are very welcome. In order to contribute, please fork this repository and submit a [pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).

@@ -10,6 +10,9 @@ Syncronization functionality for Brevo (Sendinblue previously) - Magento2 integr
 This module sync all your Magento2 orders (for newsletter subscribed users) to Brevo.
 
 These are the default built in transactional attributes:
+- QUOTE_ID
+- QUOTE_DATE
+- QUOTE_PRICE
 - ORDER_ID
 - ORDER_DATE
 - ORDER_PRICE

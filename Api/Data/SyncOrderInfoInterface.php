@@ -44,6 +44,19 @@ interface SyncOrderInfoInterface
     public function setType($type);
 
     /**
+     * @return boolean|null
+     */
+    public function getIsQuote();
+
+    /**
+     * Set quote flag
+     *
+     * @param boolean $isQuote
+     * @return void
+     */
+    public function setIsQuote($isQuote);
+
+    /**
      * @return string|null
      */
     public function getEmail();
@@ -59,13 +72,13 @@ interface SyncOrderInfoInterface
     /**
      * @return string|int|null
      */
-    public function getOrderId();
+    public function getId();
 
     /**
-     * Set sib subscriber order id
+     * Set sib subscriber quote|order id
      *
-     * @param string|int $orderId
+     * @param string|int $id
      * @return void
      */
-    public function setOrderId($orderId);
+    public function setId($id);
 }

@@ -15,16 +15,16 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use \Dadolun\SibCore\Helper\DebugLogger;
 use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
-use Magento\Sales\Model\Order;
+use Magento\Quote\Model\Quote;
 use Magento\Framework\MessageQueue\PublisherInterface;
 use \Dadolun\SibOrderSync\Api\Data\SyncOrderInfoInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class OrderUpdate
+ * Class QuoteUpdate
  * @package Dadolun\SibOrderSync\Observer
  */
-class OrderUpdate implements ObserverInterface
+class QuoteUpdate implements ObserverInterface
 {
     /**
      * @var SubscriptionManager
@@ -62,7 +62,7 @@ class OrderUpdate implements ObserverInterface
     protected $storeManager;
 
     /**
-     * OrderUpdate constructor.
+     * QuoteUpdate constructor.
      * @param SubscriptionManager $subscriptionManager
      * @param DateTimeFactory $dateTimeFactory
      * @param DebugLogger $debugLogger
@@ -96,49 +96,44 @@ class OrderUpdate implements ObserverInterface
     public function execute(Observer $observer)
     {
         try {
-            $this->debugLogger->info(__('OrderUpdate observer START'));
-            /**
-             * @var Order $order
-             */
-            $order = $observer->getOrder();
-            $email = $order->getCustomerEmail();
-            $subscriberStatus = $this->subscriptionManager->checkSubscriberStatus($email);
-            $orderSyncStatus = $this->configHelper->isSyncEnabled();
-            if ($this->configHelper->getOrderValue('sync_type') === SyncType::ASYNC) {
+            $this->debugLogger->info(__('QuoteUpdate observer START'));
+            /* @var Quote $quote */
+            $quote = $observer->getEvent()->getQuote();
+            $email = $quote->getCustomerEmail();
+            if ($email) {
+                $subscriberStatus = $this->subscriptionManager->checkSubscriberStatus($email);
+                $orderSyncStatus = $this->configHelper->isSyncEnabled();
+                if ($this->configHelper->getOrderValue('sync_type') === SyncType::ASYNC) {
 
-                /** @var SyncOrderInfoInterface $dataObject */
-                $dataObject = $this->syncInfoFactory->create(
-                    $this->storeManager->getStore()->getId(),
-                    SyncOrderInfoInterface::PARTIAL_SYNC_TYPE,
-                    $order->getId(),
-                    false,
-                    $email
-                );
-                $this->messagePublisher->publish('sibSync.order', $dataObject);
-                $this->debugLogger->info(__('Subscription order added to queue'));
-            } else {
-                $this->debugLogger->info(__('Try update order (for customer with email: %1)', $email));
-                if (in_array($subscriberStatus, ConfigurationHelper::ALLOWED_SUBSCRIBER_STATUSES) && $orderSyncStatus) {
-                    $dateTime = $this->dateTimeFactory->create();
-                    $orderDate = $dateTime->gmtDate('Y-m-d', $order->getCreatedAt());
-                    $updateDataInSib = [
-                        ConfigurationHelper::ORDER_ID_ATTRIBUTE => $order->getIncrementId(),
-                        ConfigurationHelper::ORDER_DATE_ATTRIBUTE => $orderDate,
-                        ConfigurationHelper::ORDER_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                        ConfigurationHelper::ORDER_TOTAL_INVOICED_ATTRIBUTE => $order->getTotalInvoiced(),
-                        ConfigurationHelper::ORDER_STATUS_ATTRIBUTE => $order->getStatus(),
-                        ConfigurationHelper::QUOTE_ID_ATTRIBUTE => $order->getQuoteId(),
-                        ConfigurationHelper::QUOTE_DATE_ATTRIBUTE => $orderDate,
-                        ConfigurationHelper::QUOTE_TOTAL_ATTRIBUTE => $order->getGrandTotal(),
-                    ];
-                    $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                    /** @var SyncOrderInfoInterface $dataObject */
+                    $dataObject = $this->syncInfoFactory->create(
+                        $this->storeManager->getStore()->getId(),
+                        SyncOrderInfoInterface::PARTIAL_SYNC_TYPE,
+                        $quote->getId(),
+                        true,
+                        $email
+                    );
+                    $this->messagePublisher->publish('sibSync.order', $dataObject);
+                    $this->debugLogger->info(__('Subscription quote added to queue'));
                 } else {
-                    if (!$orderSyncStatus) {
-                        $this->debugLogger->info(__('Order Sync is not available for this subscriber'));
+                    $this->debugLogger->info(__('Try update quote (for customer with email: %1)', $email));
+                    if (in_array($subscriberStatus, ConfigurationHelper::ALLOWED_SUBSCRIBER_STATUSES) && $orderSyncStatus) {
+                        $dateTime = $this->dateTimeFactory->create();
+                        $quoteDate = $dateTime->gmtDate('Y-m-d', $quote->getCreatedAt());
+                        $updateDataInSib = [
+                            ConfigurationHelper::QUOTE_ID_ATTRIBUTE => $quoteDate->getQuoteId(),
+                            ConfigurationHelper::QUOTE_DATE_ATTRIBUTE => $quoteDate,
+                            ConfigurationHelper::QUOTE_TOTAL_ATTRIBUTE => $quote->getGrandTotal(),
+                        ];
+                        $this->subscriptionManager->subscribe($email, $updateDataInSib, $subscriberStatus);
+                    } else {
+                        if (!$orderSyncStatus) {
+                            $this->debugLogger->info(__('Order Sync is not available for this subscriber'));
+                        }
                     }
                 }
             }
-            $this->debugLogger->info(__('OrderUpdate observer END'));
+            $this->debugLogger->info(__('QuoteUpdate observer END'));
         } catch (\Exception $e) {
             $this->debugLogger->error(__('Error: ') . $e->getMessage());
         }

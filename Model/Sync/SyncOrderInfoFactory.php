@@ -36,10 +36,11 @@ class SyncOrderInfoFactory
      * @param $storeId
      * @param $type
      * @param $orderId
+     * @param $isQuote
      * @param $email
      * @return SyncOrderInfoInterface
      */
-    public function create($storeId, $type, $orderId, $email)
+    public function create($storeId, $type, $id, $isQuote, $email)
     {
         /**
          * @var SyncOrderInfoInterface $syncOrderInfo
@@ -47,7 +48,8 @@ class SyncOrderInfoFactory
         $syncOrderInfo = $this->objectManager->create(SyncOrderInfoInterface::class);
         $syncOrderInfo->setStoreId($storeId);
         $syncOrderInfo->setType($type);
-        $syncOrderInfo->setOrderId($orderId);
+        $syncOrderInfo->setId($id);
+        $syncOrderInfo->setIsQuote($isQuote);
         $syncOrderInfo->setEmail($email);
         return $syncOrderInfo;
     }

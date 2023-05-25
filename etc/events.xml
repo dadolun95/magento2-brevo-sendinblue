@@ -11,6 +11,9 @@
     <event name="sales_order_save_after">
         <observer name="dadolun_sib_order_update" instance="Dadolun\SibOrderSync\Observer\OrderUpdate"/>
     </event>
+    <event name="sales_quote_save_after">
+        <observer name="dadolun_sib_quote_update" instance="Dadolun\SibOrderSync\Observer\QuoteUpdate" />
+    </event>
 </config>
 
 

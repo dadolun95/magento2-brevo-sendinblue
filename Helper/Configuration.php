@@ -27,6 +27,10 @@ class Configuration extends \Dadolun\SibCore\Helper\Configuration
     const ORDER_TOTAL_INVOICED_ATTRIBUTE = 'ORDER_PRICE_INVOICED';
     const ORDER_STATUS_ATTRIBUTE = 'ORDER_STATUS';
 
+    const QUOTE_ID_ATTRIBUTE = 'QUOTE_ID';
+    const QUOTE_DATE_ATTRIBUTE = 'QUOTE_DATE';
+    const QUOTE_TOTAL_ATTRIBUTE = 'QUOTE_PRICE';
+
     const ALLOWED_SUBSCRIBER_STATUSES = [
         Subscriber::STATUS_SUBSCRIBED
     ];

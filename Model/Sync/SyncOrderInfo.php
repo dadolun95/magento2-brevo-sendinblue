@@ -16,7 +16,8 @@ use Dadolun\SibOrderSync\Api\Data\SyncOrderInfoInterface;
 class SyncOrderInfo implements SyncOrderInfoInterface
 {
     private $store;
-    private $orderId;
+    private $id;
+    private $isQuote;
     private $type;
     private $email;
 
@@ -52,6 +53,20 @@ class SyncOrderInfo implements SyncOrderInfoInterface
     }
 
     /**
+     * @return boolean|null
+     */
+    public function getIsQuote() {
+        return $this->isQuote;
+    }
+
+    /**
+     * @param boolean $isQuote
+     */
+    public function setIsQuote($isQuote) {
+        $this->isQuote = $isQuote;
+    }
+
+    /**
      * @return string|null
      */
     public function getEmail() {
@@ -68,14 +83,14 @@ class SyncOrderInfo implements SyncOrderInfoInterface
     /**
      * @return string|int|null
      */
-    public function getOrderId() {
-        return $this->orderId;
+    public function getId() {
+        return $this->id;
     }
 
     /**
-     * @param string|int $orderId
+     * @param string|int $id
      */
-    public function setOrderId($orderId) {
-        $this->orderId = $orderId;
+    public function setId($id) {
+        $this->id = $id;
     }
 }

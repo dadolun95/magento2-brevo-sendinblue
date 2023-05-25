@@ -78,6 +78,7 @@ class SyncOrders extends \Magento\Backend\App\Action
                 $this->storeManager->getStore()->getId(),
                 SyncOrderInfoInterface::TOTAL_SYNC_TYPE,
                 '',
+                false,
                 ''
             );
 

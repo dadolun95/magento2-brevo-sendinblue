@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package     Dadolun_SibOrderSync
+ * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
+ * @license    This code is licensed under MIT license (see LICENSE for details)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Customer\CustomerData\SectionPoolInterface">
+        <arguments>
+            <argument name="sectionSourceMap" xsi:type="array">
+                <item name="sib_quote_data" xsi:type="string">Dadolun\SibOrderSync\CustomerData\SibQuoteData</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

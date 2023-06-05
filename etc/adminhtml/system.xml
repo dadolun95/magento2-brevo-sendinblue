@@ -36,6 +36,21 @@
                         <field id="order_setting">1</field>
                     </depends>
                 </field>
+                <field id="track_abandoned_cart" translate="label,comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Track Abandoned carts on Brevo</label>
+                    <comment>
+                        <![CDATA[Once enabled, flush magento cache and ensure that events are tracked on Brevo going to "Automations > Log > Event Log".<br/>
+                        Then create and configure the out of the box "Abandoned Cart" automation.<br/>
+                        See documentation <a href="https://www.brevo.com/blog/getting-started-with-abandoned-cart-emails/" target="_blank">HERE</a>
+                        ]]>
+                    </comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="dadolun_sib/sendinblue/api_key_status">1</field>
+                        <field id="dadolun_sib/sendinblue/tracking_enabled">1</field>
+                        <field id="order_setting">1</field>
+                    </depends>
+                </field>
                 <depends>
                     <field id="dadolun_sib/sendinblue/enabled">1</field>
                     <field id="dadolun_sib/sendinblue/api_key_status">1</field>

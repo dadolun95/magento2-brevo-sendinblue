@@ -1,20 +1,15 @@
 <?xml version="1.0"?>
-<!--
-/**
- * @package     Dadolun_SibOrderSync
- * @copyright   Copyright (c) 2023 Dadolun (https://www.dadolun.com)
- * @license    This code is licensed under MIT license (see LICENSE for details)
- */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="sales_order_save_after">
-        <observer name="dadolun_sib_order_update" instance="Dadolun\SibOrderSync\Observer\OrderUpdate"/>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_quote_add_item">
+        <observer name="sib_tracking_created_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\CreatedCart" />
     </event>
-    <event name="sales_quote_save_after">
-        <observer name="dadolun_sib_quote_update" instance="Dadolun\SibOrderSync\Observer\QuoteUpdate" />
+    <event name="checkout_cart_product_add_after">
+        <observer name="sib_tracking_updated_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\CreatedCart" />
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="sib_tracking_deleted_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\DeletedCart" />
+    </event>
+    <event name="sales_order_place_after">
+        <observer name="sib_tracking_order_completed" instance="Dadolun\SibOrderSync\Observer\Tracking\OrderCompleted" />
     </event>
 </config>
-
-
-

@@ -138,6 +138,7 @@ class OrderUpdate implements ObserverInterface
                     }
                 }
             }
+
             $this->debugLogger->info(__('OrderUpdate observer END'));
         } catch (\Exception $e) {
             $this->debugLogger->error(__('Error: ') . $e->getMessage());

@@ -20,7 +20,7 @@ Fully tested and working on Magento CE(EE) 2.4.4, 2.4.5, 2.4.6
 ## Installation
 You can install this module adding it on app/code folder or with composer.
 ```
-composer require dadolun95/magento2-sib-order-sync
+composer require dadolun95/magento2-brevo-sendinblue
 ```
 Then you'll need to enable the module and update your database and files:
 ```

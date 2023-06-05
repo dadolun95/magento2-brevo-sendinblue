@@ -4,7 +4,7 @@
 
 ## Features
 Syncronization functionality for Brevo (formerly Sendinblue) - Magento2 integration.
-This module integrates your Magento2 with Brevo allowing you to refine your marketing strategy, create automations on many scenarios and create campaigns based on your Magento e-commerce site data.
+This module integrates your Magento2 site with Brevo allowing you to refine your marketing strategy, create automations on many scenarios and create campaigns based on your Magento e-commerce site data.
 - Simplified module configuration
 - Sendinblue PHP SDK usage
 - Debug log feature

@@ -1,6 +1,6 @@
 # Brevo (formerly Sendinblue) - Magento2 integration module <img src="https://avatars.githubusercontent.com/u/168457?s=40&v=4" alt="magento" /> 
 
-[![Latest Stable Version](https://poser.pugx.org/dadolun95/magento2-brevo-sendinblue/v/stable)](https://packagist.org/packages/dadolun95/magento2-brevo-sendinblue)
+[![Latest Stable Version](https://poser.pugx.org/dadolun95/magento2-brevo-sendinblue/v/stable?v2=1)](https://packagist.org/packages/dadolun95/magento2-brevo-sendinblue)
 
 ## Features
 Syncronization functionality for Brevo (formerly Sendinblue) - Magento2 integration.

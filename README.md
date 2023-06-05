@@ -110,6 +110,13 @@ Customize the "Abandoned cart" email template
 ![image](https://github.com/dadolun95/magento2-sib-order-sync/assets/8927461/24d2e396-c6a2-444a-8db3-b755f875ab90)
 That's all, you're now able to manage your Magento abandoned cart notifications with Brevo automations.
 
+##### SMTP CONFIGURATION
+For Magento 2.4.4 and Magento 2.4.5 you can install [Mageplaza](https://www.mageplaza.com/magento-2-smtp/) or [Magepal](https://github.com/magepal/magento2-gmail-smtp-app) SMTP modules.
+Use Magento core SMTP configuration feature for 2.4.6 and newer versions instead.
+Brevo SMTP settings are located on "Transactional > Settings" section:
+![image](https://github.com/dadolun95/magento2-sib-order-sync/assets/8927461/82af3caa-af3c-4ad9-96ee-caaa5c1804c0)
+![image](https://github.com/dadolun95/magento2-sib-order-sync/assets/8927461/25e2eb89-4139-4f44-919d-16e5a228d085)
+
 
 ## Contributing
 Contributions are very welcome. In order to contribute, please fork this repository and submit a [pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).

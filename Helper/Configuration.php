@@ -13,7 +13,7 @@ use Magento\Newsletter\Model\Subscriber;
 
 /**
  * Class Configuration
- * @package Dadolun\SibContactSync\Helper
+ * @package Dadolun\SibOrderSync\Helper
  */
 class Configuration extends \Dadolun\SibCore\Helper\Configuration
 {

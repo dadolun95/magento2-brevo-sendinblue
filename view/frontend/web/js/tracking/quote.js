@@ -9,16 +9,18 @@ define(
     ,function(_, customerData) {
         return function(config, element)
         {
-            let sibData = customerData.get('sib_quote_data')();
-            if (!_.isEmpty(sibData) && !_.isEmpty(JSON.parse(sibData["sib_quote_data"]))) {
-                _(JSON.parse(sibData["sib_quote_data"])).each(function (event, key) {
-                    window.sendinblue.track(
-                        event.event,
-                        event.properties,
-                        event.eventdata
-                    );
-                });
-                customerData.set('sib_quote_data', {});
+            if (window.sendinblue) {
+                let sibData = customerData.get('sib_quote_data')();
+                if (!_.isEmpty(sibData) && !_.isEmpty(JSON.parse(sibData["sib_quote_data"]))) {
+                    _(JSON.parse(sibData["sib_quote_data"])).each(function (event, key) {
+                        window.sendinblue.track(
+                            event.event,
+                            event.properties,
+                            event.eventdata
+                        );
+                    });
+                    customerData.set('sib_quote_data', {});
+                }
             }
         };
     }

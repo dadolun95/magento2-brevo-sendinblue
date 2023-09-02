@@ -18,7 +18,7 @@ use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
-use \SendinBlue\Client\ApiException;
+use \Brevo\Client\ApiException;
 
 /**
  * Class OrderSetting

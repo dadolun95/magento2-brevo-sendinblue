@@ -2,11 +2,11 @@
     "name": "dadolun95/magento2-brevo-sendinblue",
     "description": "Magento2 Brevo (Sendinblue Previously) Order Sync Integration Module",
     "type": "magento2-module",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "require": {
-        "dadolun95/magento2-brevo-sendinblue-core": "^1.0.13",
-        "dadolun95/magento2-brevo-sendinblue-light": "^1.0.13",
-        "sendinblue/api-v3-sdk": "^8.4.0"
+        "dadolun95/magento2-brevo-sendinblue-core": "^1.0",
+        "dadolun95/magento2-brevo-sendinblue-light": "^1.0",
+        "getbrevo/brevo-php": "^1.0"
     },
     "license": [
         "MIT"

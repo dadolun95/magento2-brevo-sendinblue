@@ -12,6 +12,9 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
+use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Checkout\Helper\Cart as CartHelper;
 
 /**
  * Class OrderCompleted
@@ -31,17 +34,33 @@ class OrderCompleted implements ObserverInterface
     protected $customerSession;
 
     /**
+     * @var ImageHelper
+     */
+    protected $imageHelper;
+
+    /**
+     * @var CartHelper
+     */
+    protected $cartHelper;
+
+    /**
      * OrderCompleted constructor.
      * @param CheckoutSession $checkoutSession
      * @param Session $customerSession
+     * @param ImageHelper $imageHelper
+     * @param CartHelper $cartHelper
      */
     public function __construct(
         CheckoutSession $checkoutSession,
-        Session $customerSession
+        Session $customerSession,
+        ImageHelper $imageHelper,
+        CartHelper $cartHelper
     )
     {
         $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
+        $this->imageHelper = $imageHelper;
+        $this->cartHelper = $cartHelper;
     }
 
     /**
@@ -57,12 +76,19 @@ class OrderCompleted implements ObserverInterface
             $order = $observer->getData("order");
             $customer = $this->customerSession->getCustomer();
             foreach ($order->getAllVisibleItems() as $orderItem) {
+                /**
+                 * @var Product $orderProduct
+                 */
                 $orderProduct = $orderItem->getProduct();
                 $orderItemsData[] = [
-                    "product_id" => $orderProduct->getId(),
-                    "product_name" => $orderProduct->getName(),
-                    "amount" => $orderItem->getQty(),
-                    "price" => $orderProduct->getFinalPrice()
+                    'id' => $orderProduct->getId(),
+                    'url' => $orderProduct->getUrlInStore($orderProduct, ['_scope' => $order->getStoreId(), '_nosid' => true]),
+                    'name' => $orderProduct->getName(),
+                    'quantity' => $orderItem->getQty(),
+                    'price' => $orderProduct->getFinalPrice(),
+                    'image' => $this->imageHelper->init($orderProduct, "product_page_image_small")
+                        ->setImageFile($orderProduct->getSmallImage())
+                        ->getUrl()
                 ];
             }
             $orderData = [
@@ -75,7 +101,7 @@ class OrderCompleted implements ObserverInterface
                 'eventdata' => array(
                     'id' => 'cart:' . $order->getQuoteId(),
                     'data' => [
-                        "products" => $orderItemsData
+                        'items' => $orderItemsData
                     ]
                 )
             ];

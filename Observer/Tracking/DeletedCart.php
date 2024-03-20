@@ -12,6 +12,9 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Quote\Model\Quote\Item;
+use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Checkout\Helper\Cart as CartHelper;
 
 /**
  * Class RemoveFromCart
@@ -31,17 +34,33 @@ class DeletedCart implements ObserverInterface
     protected $customerSession;
 
     /**
+     * @var ImageHelper
+     */
+    protected $imageHelper;
+
+    /**
+     * @var CartHelper
+     */
+    protected $cartHelper;
+
+    /**
      * DeletedCart constructor.
      * @param CheckoutSession $checkoutSession
      * @param Session $customerSession
+     * @param ImageHelper $imageHelper
+     * @param CartHelper $cartHelper
      */
     public function __construct(
         CheckoutSession $checkoutSession,
-        Session $customerSession
+        Session $customerSession,
+        ImageHelper $imageHelper,
+        CartHelper $cartHelper
     )
     {
         $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
+        $this->imageHelper = $imageHelper;
+        $this->cartHelper = $cartHelper;
     }
 
     /**
@@ -59,12 +78,19 @@ class DeletedCart implements ObserverInterface
             $customer = $this->customerSession->getCustomer();
             $quoteItemsData = [];
             foreach ($sessionQuote->getAllVisibleItems() as $quoteItem) {
+                /**
+                 * @var Product $quoteProduct
+                 */
                 $quoteProduct = $quoteItem->getProduct();
                 $quoteItemsData[] = [
-                    "product_id" => $quoteProduct->getId(),
-                    "product_name" => $quoteProduct->getName(),
-                    "amount" => $quoteItem->getQty(),
-                    "price" => $quoteProduct->getFinalPrice()
+                    'id' => $quoteProduct->getId(),
+                    'url' => $quoteProduct->getUrlInStore($quoteProduct, ['_scope' => $sessionQuote->getStoreId(), '_nosid' => true]),
+                    'name' => $quoteProduct->getName(),
+                    'quantity' => $quoteItem->getQty(),
+                    'price' => $quoteProduct->getFinalPrice(),
+                    'image' => $this->imageHelper->init($quoteProduct, "product_page_image_small")
+                        ->setImageFile($quoteProduct->getSmallImage())
+                        ->getUrl()
                 ];
             }
             if (count($sessionQuote->getAllItems()) === 0) {
@@ -78,7 +104,7 @@ class DeletedCart implements ObserverInterface
                     ),
                     'eventdata' => array(
                         'id' => $quoteItem->getQuoteId(),
-                        'data' => array("items" => array())
+                        'data' => array('items' => array())
                     )
                 ];
                 $this->checkoutSession->setSibDeletedQuoteData($quoteData);
@@ -94,7 +120,8 @@ class DeletedCart implements ObserverInterface
                     'eventdata' => array(
                         'id' => 'cart:' . $sessionQuote->getId(),
                         'data' => [
-                            "products" => $quoteItemsData
+                            'url' => $this->cartHelper->getCartUrl(),
+                            'items' => $quoteItemsData
                         ]
                     )
                 );

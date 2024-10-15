@@ -8,10 +8,12 @@
 namespace Dadolun\SibOrderSync\Observer\Tracking;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Customer\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Quote\Model\Quote\Item;
+use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Checkout\Helper\Cart as CartHelper;
 
 /**
  * Class RemoveFromCart
@@ -26,22 +28,30 @@ class DeletedCart implements ObserverInterface
     protected $checkoutSession;
 
     /**
-     * @var Session
+     * @var ImageHelper
      */
-    protected $customerSession;
+    protected $imageHelper;
+
+    /**
+     * @var CartHelper
+     */
+    protected $cartHelper;
 
     /**
      * DeletedCart constructor.
      * @param CheckoutSession $checkoutSession
-     * @param Session $customerSession
+     * @param ImageHelper $imageHelper
+     * @param CartHelper $cartHelper
      */
     public function __construct(
         CheckoutSession $checkoutSession,
-        Session $customerSession
+        ImageHelper $imageHelper,
+        CartHelper $cartHelper
     )
     {
         $this->checkoutSession = $checkoutSession;
-        $this->customerSession = $customerSession;
+        $this->imageHelper = $imageHelper;
+        $this->cartHelper = $cartHelper;
     }
 
     /**
@@ -56,49 +66,60 @@ class DeletedCart implements ObserverInterface
              */
             $quoteItem = $observer->getData("quote_item");
             $sessionQuote = $this->checkoutSession->getQuote();
-            $customer = $this->customerSession->getCustomer();
+            $billingAddress = $sessionQuote->getBillingAddress();
+            $customer = $sessionQuote->getCustomer();
             $quoteItemsData = [];
             foreach ($sessionQuote->getAllVisibleItems() as $quoteItem) {
+                /**
+                 * @var Product $quoteProduct
+                 */
                 $quoteProduct = $quoteItem->getProduct();
                 $quoteItemsData[] = [
-                    "product_id" => $quoteProduct->getId(),
-                    "product_name" => $quoteProduct->getName(),
-                    "amount" => $quoteItem->getQty(),
-                    "price" => $quoteProduct->getFinalPrice()
+                    'id' => $quoteProduct->getId(),
+                    'url' => $quoteProduct->getUrlInStore(['_scope' => $sessionQuote->getStoreId(), '_nosid' => true]),
+                    'name' => $quoteProduct->getName(),
+                    'quantity' => $quoteItem->getQty(),
+                    'price' => $quoteProduct->getFinalPrice(),
+                    'image' => $this->imageHelper->init($quoteProduct, "product_page_image_small")
+                        ->setImageFile($quoteProduct->getSmallImage())
+                        ->getUrl()
                 ];
             }
-            if (count($sessionQuote->getAllItems()) === 0) {
-                $customer = $this->customerSession->getCustomer();
-                $quoteData = [
-                    'email' => $customer->getEmail(),
-                    'event' => 'cart_deleted',
-                    'properties' => array(
-                        'FIRSTNAME' => $customer->getFirstname(),
-                        'LASTNAME' => $customer->getLastname()
-                    ),
-                    'eventdata' => array(
-                        'id' => $quoteItem->getQuoteId(),
-                        'data' => array("items" => array())
-                    )
-                ];
-                $this->checkoutSession->setSibDeletedQuoteData($quoteData);
-                $this->checkoutSession->setSibLastCreatedQuoteId(null);
-            } else {
-                $quoteUpdateData = array(
-                    'email' => $customer->getEmail(),
-                    'event' => 'cart_updated',
-                    'properties' => array(
-                        'FIRSTNAME' => $customer->getFirstname(),
-                        'LASTNAME' => $customer->getLastname()
-                    ),
-                    'eventdata' => array(
-                        'id' => 'cart:' . $sessionQuote->getId(),
-                        'data' => [
-                            "products" => $quoteItemsData
-                        ]
-                    )
-                );
-                $this->checkoutSession->setSibUpdatedQuoteData($quoteUpdateData);
+            if ($customer && $customer->getId() || $billingAddress && $billingAddress->getEmail()) {
+                if (count($sessionQuote->getAllItems()) === 0) {
+                    $quoteData = [
+                        'email' => $customer ? $customer->getEmail() : $billingAddress->getEmail(),
+                        'event' => 'cart_deleted',
+                        'properties' => array(
+                            'FIRSTNAME' => $customer ? $customer->getFirstname() : $billingAddress->getFirstname(),
+                            'LASTNAME' => $customer ? $customer->getLastname() : $billingAddress->getLastname()
+                        ),
+                        'eventdata' => array(
+                            'id' => $quoteItem->getQuoteId(),
+                            'data' => array('items' => array())
+                        )
+                    ];
+                    $this->checkoutSession->setSibDeletedQuoteData($quoteData);
+                    $this->checkoutSession->setSibLastCreatedQuoteId(null);
+                } else {
+                    $quoteUpdateData = array(
+                        'email' => $customer ? $customer->getEmail() : $billingAddress->getEmail(),
+                        'event' => 'cart_updated',
+                        'properties' => array(
+                            'FIRSTNAME' => $customer ? $customer->getFirstname() : $billingAddress->getFirstname(),
+                            'LASTNAME' => $customer ? $customer->getLastname() : $billingAddress->getLastname()
+                        ),
+                        'eventdata' => array(
+                            'id' => 'cart:' . $sessionQuote->getId(),
+                            'data' => [
+                                'url' => $this->cartHelper->getCartUrl(),
+                                'currency' => $sessionQuote->getCurrency()->getQuoteCurrencyCode(),
+                                'items' => $quoteItemsData
+                            ]
+                        )
+                    );
+                    $this->checkoutSession->setSibUpdatedQuoteData($quoteUpdateData);
+                }
             }
         } catch (\Exception $e) {}
 

@@ -8,10 +8,12 @@
 namespace Dadolun\SibOrderSync\Observer\Tracking;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Customer\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
+use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Checkout\Helper\Cart as CartHelper;
 
 /**
  * Class OrderCompleted
@@ -26,22 +28,30 @@ class OrderCompleted implements ObserverInterface
     protected $checkoutSession;
 
     /**
-     * @var Session
+     * @var ImageHelper
      */
-    protected $customerSession;
+    protected $imageHelper;
+
+    /**
+     * @var CartHelper
+     */
+    protected $cartHelper;
 
     /**
      * OrderCompleted constructor.
      * @param CheckoutSession $checkoutSession
-     * @param Session $customerSession
+     * @param ImageHelper $imageHelper
+     * @param CartHelper $cartHelper
      */
     public function __construct(
         CheckoutSession $checkoutSession,
-        Session $customerSession
+        ImageHelper $imageHelper,
+        CartHelper $cartHelper
     )
     {
         $this->checkoutSession = $checkoutSession;
-        $this->customerSession = $customerSession;
+        $this->imageHelper = $imageHelper;
+        $this->cartHelper = $cartHelper;
     }
 
     /**
@@ -55,27 +65,35 @@ class OrderCompleted implements ObserverInterface
              * @var Order $order
              */
             $order = $observer->getData("order");
-            $customer = $this->customerSession->getCustomer();
+            $customer = $order->getCustomer();
             foreach ($order->getAllVisibleItems() as $orderItem) {
+                /**
+                 * @var Product $orderProduct
+                 */
                 $orderProduct = $orderItem->getProduct();
                 $orderItemsData[] = [
-                    "product_id" => $orderProduct->getId(),
-                    "product_name" => $orderProduct->getName(),
-                    "amount" => $orderItem->getQty(),
-                    "price" => $orderProduct->getFinalPrice()
+                    'id' => $orderProduct->getId(),
+                    'url' => $orderProduct->getUrlInStore(['_scope' => $order->getStoreId(), '_nosid' => true]),
+                    'name' => $orderProduct->getName(),
+                    'quantity' => $orderItem->getQty(),
+                    'price' => $orderProduct->getFinalPrice(),
+                    'image' => $this->imageHelper->init($orderProduct, "product_page_image_small")
+                        ->setImageFile($orderProduct->getSmallImage())
+                        ->getUrl()
                 ];
             }
             $orderData = [
-                'email' => $customer->getEmail(),
+                'email' => $customer ? $customer->getEmail() : $order->getBillingAddress()->getEmail(),
                 'event' => 'order_completed',
                 'properties' => array(
-                    'FIRSTNAME' => $customer->getFirstname(),
-                    'LASTNAME' => $customer->getLastname()
+                    'FIRSTNAME' => $customer ? $customer->getFirstname() : $order->getBillingAddress()->getFirstname(),
+                    'LASTNAME' => $customer ? $customer->getLastname() : $order->getBillingAddress()->getLastname()
                 ),
                 'eventdata' => array(
                     'id' => 'cart:' . $order->getQuoteId(),
                     'data' => [
-                        "products" => $orderItemsData
+                        'currency' => $order->getOrderCurrencyCode(),
+                        'items' => $orderItemsData
                     ]
                 )
             ];

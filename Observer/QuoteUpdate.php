@@ -99,7 +99,7 @@ class QuoteUpdate implements ObserverInterface
             $this->debugLogger->info(__('QuoteUpdate observer START'));
             /* @var Quote $quote */
             $quote = $observer->getEvent()->getQuote();
-            $email = $quote->getCustomerEmail();
+            $email = $quote->getCustomerEmail() ? $quote->getCustomerEmail() : $quote->getBillingAddress()->getEmail();
             if ($email) {
                 $subscriberStatus = $this->subscriptionManager->checkSubscriberStatus($email);
                 $orderSyncStatus = $this->configHelper->isSyncEnabled();

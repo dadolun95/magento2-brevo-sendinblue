@@ -101,7 +101,7 @@ class OrderUpdate implements ObserverInterface
              * @var Order $order
              */
             $order = $observer->getOrder();
-            $email = $order->getCustomerEmail();
+            $email = $order->getCustomerEmail() ? $order->getCustomerEmail() : $order->getBillingAddress()->getEmail();
             $subscriberStatus = $this->subscriptionManager->checkSubscriberStatus($email);
             $orderSyncStatus = $this->configHelper->isSyncEnabled();
             if ($this->configHelper->getOrderValue('sync_type') === SyncType::ASYNC) {

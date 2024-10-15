@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="sales_quote_add_item">
-        <observer name="sib_tracking_created_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\CreatedCart" />
+        <observer name="sib_tracking_created_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\UpdatedCart" />
     </event>
     <event name="checkout_cart_product_add_after">
-        <observer name="sib_tracking_updated_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\CreatedCart" />
+        <observer name="sib_tracking_updated_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\UpdatedCart" />
     </event>
     <event name="sales_quote_remove_item">
         <observer name="sib_tracking_deleted_cart" instance="Dadolun\SibOrderSync\Observer\Tracking\DeletedCart" />

@@ -147,7 +147,8 @@ class Consumer
         } else {
 
             $email = $syncData->getEmail();
-            $subscriber = $this->subscriberFactory->create()->loadBySubscriberEmail($email, $syncData->getStoreId());
+            $websiteId = (int)$this->storeManager->getStore($syncData->getStoreId())->getWebsiteId();
+            $subscriber = $this->subscriberFactory->create()->loadBySubscriberEmail($email, $websiteId);
             try {
                 if ($syncData->getIsQuote()) {
                     $quote = $this->quoteRepository->get($syncData->getId());
